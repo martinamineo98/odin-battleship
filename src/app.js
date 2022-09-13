@@ -1,4 +1,7 @@
 
+import './app.css'
+import {createGameboard} from './app.dom.js'
+
 export function Ship (length) {
 	return {
 		direction: 1,
@@ -76,8 +79,13 @@ export function Gameboard () {
 
 export function Player () {
 	return {
+		gameboard: null,
 		attack (gameboard, row, col) {
 			gameboard.receiveAttack(row, col)
+		},
+		turn (gameboard) {
+			this.gameboard = gameboard
+			// TODO: when is the player's turn do something.
 		}
 	}
 }
@@ -87,12 +95,12 @@ export function Computer () {
 		return Math.floor(Math.random() * 10)
 	}
 	
-	function randomMove (gameboard) {
+	function randomMove () {
 		let row = randomNumber()
 		let col = randomNumber()
 		
-		if (gameboard.attacks[row][col] !== null) {
-			randomMove(gameboard)
+		if (this.gameboard.attacks[row][col] !== null) {
+			randomMove(this.gameboard)
 		} else {
 			return [row, col]
 		}
@@ -100,11 +108,31 @@ export function Computer () {
 
 	return {
 		...Player,
-		attack (gameboard) {
-			let [row, col] = randomMove(gameboard)
-			console.log(gameboard.attacks)
-			gameboard.receiveAttack(row, col)
-			console.log(gameboard.attacks)
+		attack () {
+			let [row, col] = randomMove(this.gameboard)
+			this.gameboard.receiveAttack(row, col)
 		}
 	}
 }
+
+export function game () {
+	const player1 = new Player()
+	const player2 = new Computer()
+	const player1Gameboard = new Gameboard()
+	const player2Gameboard = new Gameboard()
+	
+	createGameboard(player1Gameboard, player2)
+	createGameboard(player2Gameboard, player1)
+	
+	let turn = 1
+	
+	if (Boolean(turn)) {
+		player1.turn(player2Gameboard)
+		turn = 0
+	} else {
+		player2.turn(player1Gameboard)
+		turn = 1
+	}
+}
+
+game()
