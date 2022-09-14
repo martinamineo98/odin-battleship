@@ -43,32 +43,3 @@ body {
 	place-items: center;
 	width: 100%;
 }
-
-/* ------------------------------------------------------------- GRID */
-
-.grid {
-	aspect-ratio: 1;
-	background-color: #FFFFFF;
-	display: grid;
-	gap: 5px;
-	grid-template-columns: repeat(10, 1fr);
-	grid-template-rows: repeat(10, 1fr);
-	width: 400px;
-}
-
-.grid.deactivated {
-	position: relative;
-}
-
-.grid.deactivated::before {
-	background-color: rgba(0, 0, 0, .125);
-	content: '';
-	height: 100%;
-	position: absolute;
-	width: 100%;
-}
-
-.square {
-	aspect-ratio: 1;
-	background-color: #EEEEEE;
-}
