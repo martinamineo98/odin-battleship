@@ -1,4 +1,3 @@
-
 export function Ship (length) {
 	function getIndex (array, element) {
 		return array.map((x) => JSON.stringify(x)).indexOf(JSON.stringify(element))
@@ -26,8 +25,7 @@ export function Ship (length) {
 	}
 }
 
-export function Gameboard () {
-	
+export function Gameboard () {	
 	return {
 		grid: [...Array(10).keys()].map((element) => element = [...Array(10).keys()].map((element) => element = null)),
 		hits: [...Array(10).keys()].map((element) => element = [...Array(10).keys()].map((element) => element = null)),
@@ -39,7 +37,7 @@ export function Gameboard () {
 			for (let i = 0; i < ship.length; i++) {
 				let _row = (direction) ? row : row + i
 				let _col = (direction) ? col + i : col
-				squares.push(this.grid[_row, _col])
+				squares.push(this.grid[_row][_col])
 				coordinates.push([_row, _col])
 			}
 			
@@ -53,6 +51,7 @@ export function Gameboard () {
 			for (let i = 0; i < coordinates.length; i++) {
 				let [_row, _col] = coordinates[i]
 				ship.addSquare(i, _row, _col)
+				this.grid[_row][_col] = ship
 			}
 		},
 		receiveAttack (row, col) {
@@ -64,6 +63,53 @@ export function Gameboard () {
 			let status = []
 			this.ships.forEach((ship) => status.push(ship.isSunk()))
 			return status.every((ship) => ship === true)
+		}
+	}
+}
+
+export function Player (gameboard) {
+	return {
+		gameboard: gameboard,
+		attackedSquares: new Set(),
+		attack (row, col) {
+			const square = [row, col]
+			
+			if (this.attackedSquares.has(square)) {
+				throw new Error('The move is not legal.')
+			}
+			
+			this.gameboard.receiveAttack(row, col)
+			this.attackedSquares.add(square)
+		}
+	}
+}
+
+export function Computer (gameboard) {
+	function randomNumber() {
+		return Math.floor(Math.random() * 9)
+	}
+
+	function randomCoordinates () {		
+		return [randomNumber(), randomNumber()]
+	}
+			
+	return {
+		...Player(gameboard),
+		attack() {
+			const square = this.randomMove()
+			const [row, col] = square			
+			
+			if (this.attackedSquares.has(square)) {
+				throw new Error('The move is not legal.')
+			}
+			
+			this.gameboard.receiveAttack(row, col)
+			this.attackedSquares.add(square)
+		},
+		randomMove () {
+			const square = randomCoordinates()		
+			if (!this.attackedSquares.has(square)) return square
+			this.randomMove()
 		}
 	}
 }

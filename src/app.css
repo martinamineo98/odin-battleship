@@ -1,4 +1,17 @@
 
+/* -------------------------------------------------------- VARIABLES */
+
+:root {
+	--sans-serif: -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Cantarell, Ubuntu, roboto, noto, arial, sans-serif;
+	--main-font-family: --sans-serif;
+	--grid-background-color: hsl(0deg, 0%, 100%);
+	--grid-unactive-background-color: hsla(0deg, 0%, 50%, 50%);
+	--square-background-color: hsl(0deg, 0%, 95%);
+	--square-attacked-font-color: hsl(0deg, 50%, 50%);
+	--square-attacked-missed-font-color: hsl(0deg, 0%, 50%);
+	--square-attacked-sunk-background-color: hsla(0deg, 0%, 50%, 25%);
+}
+
 /* ------------------------------------------------------------ RESET */
 
 *,
@@ -36,10 +49,66 @@ table {
 
 body {
 	display: grid;
-	gap: 100px;
+	font: 1.4rem var(--main-font-family);
 	grid-auto-flow: column;
 	min-height: 100vh;
-	place-content: center;
+	place-content: center space-around;
 	place-items: center;
 	width: 100%;
+}
+
+/* ------------------------------------------------------------- GRID */
+
+.grid {
+	aspect-ratio: 1;
+	background-color: var(--grid-background-color);
+	display: grid;
+	gap: 3px;
+	grid-template-columns: repeat(10, 1fr);
+	grid-template-rows: repeat(10, 1fr);
+	position: relative;
+	width: min(500px, 50vw);
+}
+
+.grid.unactive::before {
+	background-color: var(--grid-unactive-background-color);
+	border-radius: 5px;
+	content: '';
+	height: 100%;
+	position: absolute;
+	width: 100%;
+}
+
+/* ---------------------------------------------------------- SQUARES */
+
+.square {
+	background-color: var(--square-background-color);
+	border-radius: 5px;
+	transition: all .5s ease-in-out;
+}
+
+.square:not(.attacked):hover {
+	cursor: pointer;
+}
+
+.square.attacked {
+	display: grid;
+	font-size: 3rem;
+	font-weight: bold;
+	place-content: center;
+	place-items: center;
+}
+
+.square.attacked::before {
+	content: '\D7';
+	color: var(--square-attacked-font-color);
+}
+
+.square.attacked.missed::before {
+	content: '\2022';
+	color: var(--square-attacked-missed-font-color);
+}
+
+.square.attacked.sunk {
+	background-color: var(--square-attacked-sunk-background-color);
 }
